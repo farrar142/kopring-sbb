@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 import lombok.Getter
 import lombok.Setter
 import java.time.LocalDateTime
@@ -19,5 +20,7 @@ class Answer (
     var id:Int,
     @Column(columnDefinition = "TEXT")
     var content:String,
-    var createDate:LocalDateTime
+    var createDate:LocalDateTime,
+    @ManyToOne
+    var question:Question
 )
