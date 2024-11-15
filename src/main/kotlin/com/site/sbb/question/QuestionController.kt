@@ -21,6 +21,8 @@ class QuestionController(
 
     @GetMapping("/question/detail/{id}")
     fun detail(model :Model, @PathVariable("id") id : Int):String{
+        val q = this.questionService.getQuestion(id)
+        model.addAttribute("question",q)
         return "question_detail"
     }
 
