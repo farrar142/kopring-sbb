@@ -14,15 +14,18 @@ import kotlin.test.assertTrue
 class SbbApplicationTests{
 	@Autowired
 	lateinit var questionRepository: QuestionRepository
-
+	@Autowired
+	lateinit var answerRepository: AnswerRepository
 	@Test
 	fun testJpa(){
-		assertEquals(2,this.questionRepository.count())
-		val oq = this.questionRepository.findById(1)
+		val oq = this.questionRepository.findById(2)
 		assertTrue(oq.isPresent)
 		val q = oq.get()
-		this.questionRepository.delete(q)
-		assertEquals(1,this.questionRepository.count())
+		val a = Answer()
+		a.question = q
+		a.content = "네 자동으로 생성됩니다."
+		a.createDate = LocalDateTime.now()
+		this.answerRepository.save(a)
 	}
 
 }

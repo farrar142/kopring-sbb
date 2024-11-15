@@ -14,13 +14,14 @@ import java.time.LocalDateTime
 @Getter
 @Setter
 @Entity
-class Answer (
+class Answer {
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    var id:Int,
+    var id:Int = 0
     @Column(columnDefinition = "TEXT")
-    var content:String,
-    var createDate:LocalDateTime,
+    var content:String = ""
+    var createDate:LocalDateTime = LocalDateTime.now()
     @ManyToOne
-    var question:Question
-)
+    lateinit var question:Question
+}
