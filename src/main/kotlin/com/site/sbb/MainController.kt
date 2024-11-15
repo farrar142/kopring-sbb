@@ -12,4 +12,9 @@ class MainController {
         println("hello world")
         return "hello world 2"
     }
+
+    @GetMapping("/")
+    fun root():String{
+        return "redirect:/question_list"
+    }
 }
