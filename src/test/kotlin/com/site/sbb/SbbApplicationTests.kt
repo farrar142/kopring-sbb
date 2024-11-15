@@ -18,14 +18,10 @@ class SbbApplicationTests{
 	lateinit var answerRepository: AnswerRepository
 	@Test
 	fun testJpa(){
-		val oq = this.questionRepository.findById(2)
-		assertTrue(oq.isPresent)
-		val q = oq.get()
-		val a = Answer()
-		a.question = q
-		a.content = "네 자동으로 생성됩니다."
-		a.createDate = LocalDateTime.now()
-		this.answerRepository.save(a)
+		val oa = this.answerRepository.findById(1);
+		assertTrue(oa.isPresent)
+		val a = oa.get()
+		assertEquals(a.question.id,2)
 	}
 
 }
