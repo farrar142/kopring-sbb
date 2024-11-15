@@ -16,7 +16,7 @@ class SbbApplicationTests{
 
 	@Test
 	fun testJpa(){
-		val q = questionRepository.findBySubject("sbb가 무엇인가요?")
+		val q = questionRepository.findBySubjectAndContent("sbb가 무엇인가요?","sbb에 대해서 알고 싶습니다.")
 		assertEquals(1,q.id)
 	}
 
