@@ -11,22 +11,20 @@ import lombok.Getter
 import lombok.Setter
 import java.time.LocalDateTime
 
-@Getter
-@Setter
 @Entity
-class Question(
+class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id :Int,
+    var id: Int = 0
 
-    @Column(length=200)
-    var subject:String,
+    @Column(length = 200)
+    var subject: String = ""
 
     @Column(columnDefinition = "TEXT")
-    var content : String,
-    var createDate: LocalDateTime,
+    var content: String = ""
+    var createDate: LocalDateTime = LocalDateTime.now()
 
-    @OneToMany(mappedBy="question",cascade=[CascadeType.REMOVE])
+    @OneToMany(mappedBy = "question", cascade = [CascadeType.REMOVE])
     //List는 immutable MutableList는 mutable
-    var answerList: MutableList<Answer>
-)
+    var answerList: MutableList<Answer> = mutableListOf()
+}
