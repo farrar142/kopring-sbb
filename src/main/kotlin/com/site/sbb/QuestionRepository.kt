@@ -5,4 +5,5 @@ import java.util.Optional
 
 interface QuestionRepository:JpaRepository<Question,Int>   {
     fun findBySubject(subject:String):Question
+    fun findBySubjectAndContent(subject:String,content:String):Question
 }
