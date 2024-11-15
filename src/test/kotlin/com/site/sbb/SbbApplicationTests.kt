@@ -16,13 +16,8 @@ class SbbApplicationTests{
 
 	@Test
 	fun testJpa(){
-		val oq = this.questionRepository.findById(1)
-		if (oq.isPresent){
-			val q = oq.get()
-			assertEquals("sbb가 무엇인가요?",q.subject)
-		}else{
-			assertEquals(true,false)
-		}
+		val q = questionRepository.findBySubject("sbb가 무엇인가요?")
+		assertEquals(1,q.id)
 	}
 
 }
