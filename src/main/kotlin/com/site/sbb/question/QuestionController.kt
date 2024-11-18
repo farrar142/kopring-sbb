@@ -33,14 +33,14 @@ class QuestionController(
     }
 
     @GetMapping("/create")
-    fun questionCreate(qf: QuestionForm):String{
+    fun questionCreate(questionForm: QuestionForm):String{
         return "question_form";
     }
 
     @PostMapping("/create")
-    fun questionCreate(@Valid qf:QuestionForm,br:BindingResult):String{
+    fun questionCreate(@Valid questionForm:QuestionForm,br:BindingResult):String{
         if (br.hasErrors())return "question_form";
-        val q = this.questionService.create(subject=qf.subject,content=qf.content)
+        val q = this.questionService.create(subject=questionForm.subject,content=questionForm.content)
         return "redirect:/question/list"
     }
 
