@@ -1,6 +1,9 @@
 package com.site.sbb.question
 
 import com.site.sbb.DataNotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.Optional
 
@@ -9,8 +12,9 @@ import java.util.Optional
 class QuestionService(
     val questionRepository: QuestionRepository
 ) {
-    fun getList():List<Question>{
-        return this.questionRepository.findAll()
+    fun getList(page:Int):Page<Question>{
+        val pageable: Pageable = PageRequest.of(page,10)
+        return this.questionRepository.findAll(pageable)
     }
 
     fun getQuestion(id:Int):Question{
