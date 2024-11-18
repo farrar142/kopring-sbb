@@ -1,9 +1,11 @@
 package com.site.sbb.question
 
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.stereotype.Service
 import org.springframework.ui.Model
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -36,9 +38,9 @@ class QuestionController(
     }
 
     @PostMapping("/create")
-    fun questionCreate(@RequestParam(value="subject") subject:String,
-                       @RequestParam(value="content") content:String):String{
-        val q = this.questionService.create(subject=subject,content=content)
+    fun questionCreate(@Valid qf:QuestionForm,br:BindingResult):String{
+        if (br.hasErrors())return "question_form";
+        val q = this.questionService.create(subject=qf.subject,content=qf.content)
         return "redirect:/question/list"
     }
 
