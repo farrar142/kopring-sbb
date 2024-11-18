@@ -28,4 +28,9 @@ class QuestionController(
         return "question_detail"
     }
 
+    @GetMapping("/create")
+    fun questionCreate():String{
+        return "question_form";
+    }
+
 }
