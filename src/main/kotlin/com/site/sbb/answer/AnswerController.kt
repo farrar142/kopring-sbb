@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam
 
 @Controller
 @RequestMapping("/answer")
-class AnswerController(val questionService:QuestionService) {
+class AnswerController(val questionService:QuestionService,val answerService: AnswerService) {
 
     @PostMapping("/create/{id}")
     fun createAnswer(model:Model,@PathVariable("id") id:Int,@RequestParam(value="content") content:String):String{
         val q = this.questionService.getQuestion(id)
+        this.answerService.create(q,content)
         return String.format("redirect:/question/detail/%s",id)
     }
 }
