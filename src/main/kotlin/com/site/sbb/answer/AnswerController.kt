@@ -1,6 +1,7 @@
 package com.site.sbb.answer
 
 import com.site.sbb.question.QuestionService
+import jakarta.validation.Valid
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam
 class AnswerController(val questionService:QuestionService,val answerService: AnswerService) {
 
     @PostMapping("/create/{id}")
-    fun createAnswer(model:Model,@PathVariable("id") id:Int,answerForm:AnswerForm,bindingResult: BindingResult):String{
+    fun createAnswer(model:Model, @PathVariable("id") id:Int, @Valid answerForm:AnswerForm, bindingResult: BindingResult):String{
         val q = this.questionService.getQuestion(id)
         if (bindingResult.hasErrors()){
             model.addAttribute("question",q)
