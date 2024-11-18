@@ -15,6 +15,6 @@ class MainController {
 
     @GetMapping("/")
     fun root():String{
-        return "redirect:/question_list"
+        return "redirect:/question/list"
     }
 }
