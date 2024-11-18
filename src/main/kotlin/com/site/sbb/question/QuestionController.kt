@@ -36,8 +36,9 @@ class QuestionController(
     }
 
     @PostMapping("/create")
-    fun questionCreate(@RequestParam(value="subject") subject:String,@RequestParam(value="content") content:String):String{
-
+    fun questionCreate(@RequestParam(value="subject") subject:String,
+                       @RequestParam(value="content") content:String):String{
+        val q = this.questionService.create(subject=subject,content=content)
         return "redirect:/question/list"
     }
 

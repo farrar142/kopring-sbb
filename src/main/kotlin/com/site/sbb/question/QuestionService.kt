@@ -18,4 +18,11 @@ class QuestionService(
         if (qr.isPresent) return qr.get()
         throw DataNotFoundException("question not found")
     }
+    fun create(subject:String,content:String):Question{
+        val q = Question()
+        q.subject=subject
+        q.content=content
+        questionRepository.save(q)
+        return q
+    }
 }
