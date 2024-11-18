@@ -1,5 +1,6 @@
 package com.site.sbb.question
 
+import com.site.sbb.answer.AnswerForm
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -26,7 +27,7 @@ class QuestionController(
     }
 
     @GetMapping("/detail/{id}")
-    fun detail(model :Model, @PathVariable("id") id : Int):String{
+    fun detail(model :Model, @PathVariable("id") id : Int,answerForm:AnswerForm):String{
         val q = this.questionService.getQuestion(id)
         model.addAttribute("question",q)
         return "question_detail"
