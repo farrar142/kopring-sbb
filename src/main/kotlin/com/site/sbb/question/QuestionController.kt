@@ -33,7 +33,7 @@ class QuestionController(
     }
 
     @GetMapping("/create")
-    fun questionCreate():String{
+    fun questionCreate(qf: QuestionForm):String{
         return "question_form";
     }
 
