@@ -1,28 +1,26 @@
 package com.site.sbb
 
 import com.site.sbb.answer.AnswerRepository
-import com.site.sbb.question.QuestionRepository
+import com.site.sbb.question.QuestionService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
 class SbbApplicationTests{
 	@Autowired
-	lateinit var questionRepository: QuestionRepository
-	@Autowired
-	lateinit var answerRepository: AnswerRepository
+	lateinit var questionService: QuestionService
 	@Test
 	fun testJpa(){
-		val oa = this.answerRepository.findById(1);
-		assertTrue(oa.isPresent)
-		val a = oa.get()
-		assertEquals(a.question.id,2)
+
+		for (i in 1..300) {
+			val subject = String.format("테스트 데이터입니다:[%03d]", i)
+			val content = "내용무"
+			questionService.create(subject, content)
+		}
 	}
 
 }
