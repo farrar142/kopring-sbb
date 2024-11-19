@@ -37,4 +37,9 @@ class UserController (val userService: UserService){
         }
         return "redirect:/"
     }
+
+    @GetMapping("/login")
+    fun login():String{
+        return "login_form"
+    }
 }
