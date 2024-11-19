@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping
 @RequestMapping("/user")
 class UserController (val userService: UserService){
     @GetMapping("/signup")
-    fun signup(creationForm: UserCreationForm):String{
+    fun signup(userCreateForm: UserCreateForm):String{
         return "signup_form"
     }
 
     @PostMapping("/signup")
-    fun signup(@Valid userCreationForm: UserCreationForm,bindingResult:BindingResult):String{
+    fun signup(@Valid userCreateForm: UserCreateForm, bindingResult:BindingResult):String{
         if (bindingResult.hasErrors())return "signup_form"
-        if (userCreationForm.password1!=userCreationForm.password2){
+        if (userCreateForm.password1!=userCreateForm.password2){
             bindingResult.rejectValue("password2","passwordInCorrect")
             return "signup_form"
         }
-        userService.create(userCreationForm.username,userCreationForm.email,userCreationForm.password1)
+        userService.create(userCreateForm.username,userCreateForm.email,userCreateForm.password1)
         return "redirect:/"
     }
 }
