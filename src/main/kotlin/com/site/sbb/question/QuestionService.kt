@@ -4,6 +4,7 @@ import com.site.sbb.DataNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.util.Optional
 
@@ -13,7 +14,8 @@ class QuestionService(
     val questionRepository: QuestionRepository
 ) {
     fun getList(page:Int):Page<Question>{
-        val pageable: Pageable = PageRequest.of(page,10)
+        val sorts:List<Sort.Order> = ArrayList<Sort.Order>().plus(Sort.Order.desc("createDate"))
+        val pageable: Pageable = PageRequest.of(page,10,Sort.by(sorts))
         return this.questionRepository.findAll(pageable)
     }
 
