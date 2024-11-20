@@ -4,6 +4,7 @@ import com.site.sbb.answer.AnswerForm
 import com.site.sbb.user.UserService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.stereotype.Service
 import org.springframework.ui.Model
@@ -36,11 +37,13 @@ class QuestionController(
         return "question_detail"
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
     fun questionCreate(questionForm: QuestionForm):String{
         return "question_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create")
     fun questionCreate(@Valid questionForm:QuestionForm,br:BindingResult,principal:Principal):String{
         if (br.hasErrors())return "question_form";

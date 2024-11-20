@@ -3,6 +3,7 @@ package com.site.sbb.answer
 import com.site.sbb.question.QuestionService
 import com.site.sbb.user.UserService
 import jakarta.validation.Valid
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -21,6 +22,7 @@ class AnswerController(
     val userService:UserService
     ) {
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{id}")
     fun createAnswer(model:Model, @PathVariable("id") id:Int, @Valid answerForm:AnswerForm, bindingResult: BindingResult,principal: Principal):String{
         val u = userService.getUser(principal.name)
