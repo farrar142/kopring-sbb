@@ -25,7 +25,7 @@ class QuestionController(
         model.addAttribute("paging",paging)
         return "question_list"
     }
-ㅕ
+
     @GetMapping("/detail/{id}")
     fun detail(model :Model, @PathVariable("id") id : Int,answerForm:AnswerForm):String{
         val q = this.questionService.getQuestion(id)
