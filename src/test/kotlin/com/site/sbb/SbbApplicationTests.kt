@@ -16,11 +16,11 @@ class SbbApplicationTests{
 	@Test
 	fun testJpa(){
 
-		for (i in 1..300) {
-			val subject = String.format("테스트 데이터입니다:[%03d]", i)
-			val content = "내용무"
-			questionService.create(subject, content)
-		}
+//		for (i in 1..300) {
+//			val subject = String.format("테스트 데이터입니다:[%03d]", i)
+//			val content = "내용무"
+//			questionService.create(subject, content,null)
+//		}
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.site.sbb.question
 
 import com.site.sbb.answer.AnswerForm
+import com.site.sbb.user.UserService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -12,12 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import java.security.Principal
 
 
 @Controller
 @RequestMapping("/question")
 class QuestionController(
-    val questionService: QuestionService
+    val questionService: QuestionService,
+    val userService: UserService
 ) {
     @GetMapping("/list")
     fun list(model:Model,@RequestParam(value="page",defaultValue="0") page:Int):String{
@@ -39,9 +42,10 @@ class QuestionController(
     }
 
     @PostMapping("/create")
-    fun questionCreate(@Valid questionForm:QuestionForm,br:BindingResult):String{
+    fun questionCreate(@Valid questionForm:QuestionForm,br:BindingResult,principal:Principal):String{
         if (br.hasErrors())return "question_form";
-        val q = this.questionService.create(subject=questionForm.subject,content=questionForm.content)
+        val u = userService.getUser(principal.name)
+        val q = questionService.create(subject=questionForm.subject,content=questionForm.content,author=u)
         return "redirect:/question/list"
     }
 

@@ -1,6 +1,7 @@
 package com.site.sbb.question
 
 import com.site.sbb.DataNotFoundException
+import com.site.sbb.user.SiteUser
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -24,10 +25,11 @@ class QuestionService(
         if (qr.isPresent) return qr.get()
         throw DataNotFoundException("question not found")
     }
-    fun create(subject:String,content:String):Question{
+    fun create(subject:String,content:String,author:SiteUser):Question{
         val q = Question()
         q.subject=subject
         q.content=content
+        q.author=author
         questionRepository.save(q)
         return q
     }
