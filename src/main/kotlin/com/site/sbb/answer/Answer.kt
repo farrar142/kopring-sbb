@@ -1,6 +1,7 @@
 package com.site.sbb.answer
 
 import com.site.sbb.question.Question
+import com.site.sbb.user.SiteUser
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -25,4 +26,7 @@ class Answer {
     var createDate:LocalDateTime = LocalDateTime.now()
     @ManyToOne
     lateinit var question: Question
+
+    @ManyToOne
+    lateinit var author: SiteUser
 }
