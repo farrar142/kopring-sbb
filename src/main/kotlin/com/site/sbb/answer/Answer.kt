@@ -29,4 +29,6 @@ class Answer {
 
     @ManyToOne
     var author: SiteUser? = null
+
+    var modifyDate:LocalDateTime? = null
 }
