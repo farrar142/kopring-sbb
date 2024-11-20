@@ -30,5 +30,5 @@ class Question {
     var answerList: MutableList<Answer> = mutableListOf()
 
     @ManyToOne
-    lateinit var author:SiteUser
+    var author: SiteUser? = null
 }

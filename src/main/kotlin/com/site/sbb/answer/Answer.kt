@@ -28,5 +28,5 @@ class Answer {
     lateinit var question: Question
 
     @ManyToOne
-    lateinit var author: SiteUser
+    var author: SiteUser? = null
 }
