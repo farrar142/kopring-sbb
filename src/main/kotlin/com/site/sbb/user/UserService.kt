@@ -10,6 +10,7 @@ class UserService(val userRepository: UserRepository,val passwordEncoder: Passwo
         val u = SiteUser()
         u.username = username
         u.email = email
+        println(password)
         val encodedPassword = passwordEncoder.encode(password)
         u.password = encodedPassword
         userRepository.save(u)

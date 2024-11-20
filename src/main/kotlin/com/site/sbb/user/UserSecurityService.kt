@@ -8,8 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class UserSecurityService:UserDetailsService {
-    lateinit var userRepository: UserRepository
+class UserSecurityService(
+    val userRepository: UserRepository,
+):UserDetailsService {
     override fun loadUserByUsername(username:String):User{
         val ou = userRepository.findByusername(username)
         if (ou.isEmpty){
