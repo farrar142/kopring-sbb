@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 import java.util.Optional
 
 
@@ -32,5 +33,11 @@ class QuestionService(
         q.author=author
         questionRepository.save(q)
         return q
+    }
+    fun modify(question: Question,subject: String,content: String){
+        question.subject=subject
+        question.content=content
+        question.modifyDate= LocalDateTime.now()
+        questionRepository.save(question)
     }
 }
