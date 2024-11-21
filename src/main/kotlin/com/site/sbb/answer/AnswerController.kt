@@ -46,4 +46,15 @@ class AnswerController(
         answerForm.content= answer.content
         return "answer_form"
     }
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    fun answerMOdify(@PathVariable("id") id:Int,
+                     @Valid answerForm: AnswerForm,
+                     bindingResult: BindingResult,
+                     principal: Principal):String{
+        if (bindingResult.hasErrors())throw ResponseStatusException(HttpStatus.BAD_REQUEST,"수정권한이 없습니다.")
+        val answer = answerService.getAnswer(id)
+        answerService.modify(answer,answerForm.content)
+        return String.format("/redirect:/question/detail/%s",answer.question.id)
+    }
 }
