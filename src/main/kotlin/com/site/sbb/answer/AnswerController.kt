@@ -48,7 +48,7 @@ class AnswerController(
     }
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
-    fun answerMOdify(@PathVariable("id") id:Int,
+    fun answerModify(@PathVariable("id") id:Int,
                      @Valid answerForm: AnswerForm,
                      bindingResult: BindingResult,
                      principal: Principal):String{
