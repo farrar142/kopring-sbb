@@ -76,4 +76,14 @@ class QuestionController(
         questionService.modify(question,questionForm.subject,questionForm.content)
         return String.format("redirect:/question/detail/%s",id)
     }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/delete/{id}")
+    fun questionDelete(@PathVariable("id") id:Int,principal: Principal):String{
+        val question = questionService.getQuestion(id)
+        if (!question.author?.username.equals(principal.name)){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST,"삭제권한이 없습니다.")
+        }
+        questionService.delete(question)
+        return "redirect:/"
+    }
 }
