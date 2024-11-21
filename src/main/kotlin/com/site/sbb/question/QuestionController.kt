@@ -64,5 +64,16 @@ class QuestionController(
         questionForm.content = question.content
         return "question_form"
     }
-
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modify/{id}")
+    fun questionModify(@PathVariable("id") id:Int,
+                       @Valid questionForm: QuestionForm,
+                       bindingResult: BindingResult,
+                       principal: Principal):String{
+        if (bindingResult.hasErrors()){return "question_form"}
+        val question = questionService.getQuestion(id)
+        if (!question.author?.username.equals(principal.name))throw ResponseStatusException(HttpStatus.BAD_REQUEST,"수정권한이 없습니다.")
+        questionService.modify(question,questionForm.subject,questionForm.content)
+        return String.format("redirect:/question/detail/%s",id)
+    }
 }
