@@ -40,4 +40,8 @@ class QuestionService(
         question.modifyDate= LocalDateTime.now()
         questionRepository.save(question)
     }
+
+    fun delete(question: Question){
+        questionRepository.delete(question)
+    }
 }
