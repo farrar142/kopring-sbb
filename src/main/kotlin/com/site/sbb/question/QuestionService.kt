@@ -63,13 +63,15 @@ class QuestionService(
                 query: CriteriaQuery<*>?,
                 cb: CriteriaBuilder
             ): Predicate {
-                return cb.conjunction()
+                var predicate = cb.conjunction()
+                if (kw.isNotEmpty()) predicate = this.search(q,query,cb)
+                return predicate
             }
              fun search(
                  q: Root<Question>,
                  query: CriteriaQuery<*>?,
                  cb: CriteriaBuilder):Predicate{
-                 val searchKw = "%"+kw+"%"
+                 val searchKw = "%$kw%"
                  val a : Join<Question, Answer> = q.join("answerList",JoinType.LEFT)
                  val u1 : Join<Question,SiteUser> = q.join("author",JoinType.LEFT)
                  val u2: Join<Answer,SiteUser> = a.join("author",JoinType.LEFT)
