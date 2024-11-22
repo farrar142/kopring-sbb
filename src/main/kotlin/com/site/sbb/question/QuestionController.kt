@@ -1,6 +1,7 @@
 package com.site.sbb.question
 
 import com.site.sbb.answer.AnswerForm
+import com.site.sbb.user.SiteUser
 import com.site.sbb.user.UserService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
@@ -64,6 +65,7 @@ class QuestionController(
         questionForm.content = question.content
         return "question_form"
     }
+
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     fun questionModify(@PathVariable("id") id:Int,
@@ -76,6 +78,7 @@ class QuestionController(
         questionService.modify(question,questionForm.subject,questionForm.content)
         return String.format("redirect:/question/detail/%s",id)
     }
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
     fun questionDelete(@PathVariable("id") id:Int,principal: Principal):String{
@@ -85,5 +88,14 @@ class QuestionController(
         }
         questionService.delete(question)
         return "redirect:/"
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    fun questionVote(@PathVariable("id") id:Int, principal: Principal):String{
+        val question:Question = questionService.getQuestion(id)
+        val siteUser:SiteUser= userService.getUser(principal.name)
+        questionService.vote(question,siteUser)
+        return String.format("redirect:/question/detail/%s",id)
     }
 }
