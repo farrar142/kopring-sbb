@@ -32,4 +32,8 @@ class AnswerService(
     fun delete(answer:Answer){
         answerRepository.delete(answer)
     }
+    fun vote(answer: Answer,siteUser: SiteUser){
+        answer.voter.add(siteUser)
+        answerRepository.save(answer)
+    }
 }
