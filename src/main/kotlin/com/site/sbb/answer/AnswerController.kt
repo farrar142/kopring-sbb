@@ -65,4 +65,12 @@ class AnswerController(
         answerService.delete(answer)
         return String.format("redirect:/question/detail/%s",answer.question.id)
     }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    fun answerVote(@PathVariable("id") id:Int, principal: Principal):String{
+        val answer = answerService.getAnswer(id)
+        val siteUser = userService.getUser(principal.name)
+        answerService.vote(answer,siteUser)
+        return String.format("redirect:/question/detail/%s",answer.question.id)
+    }
 }
