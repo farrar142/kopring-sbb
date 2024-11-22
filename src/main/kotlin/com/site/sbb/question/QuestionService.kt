@@ -78,7 +78,7 @@ class QuestionService(
                      cb.like(q.get("content"),searchKw),
                      cb.like(a.get("content"),searchKw),
                      cb.like(u1.get("username"),searchKw),
-                     cb.like(u2.get("username"),search())
+                     cb.like(u2.get("username"),searchKw)
                  )
              }
         }
