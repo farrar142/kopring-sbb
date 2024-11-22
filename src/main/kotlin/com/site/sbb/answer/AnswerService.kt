@@ -29,4 +29,7 @@ class AnswerService(
         answer.modifyDate= LocalDateTime.now()
         answerRepository.save(answer)
     }
+    fun delete(answer:Answer){
+        answerRepository.delete(answer)
+    }
 }
