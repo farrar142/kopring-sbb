@@ -1,11 +1,19 @@
 package com.site.sbb.question
 
 import com.site.sbb.DataNotFoundException
+import com.site.sbb.answer.Answer
 import com.site.sbb.user.SiteUser
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.CriteriaQuery
+import jakarta.persistence.criteria.Join
+import jakarta.persistence.criteria.JoinType
+import jakarta.persistence.criteria.Predicate
+import jakarta.persistence.criteria.Root
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.Optional
@@ -47,5 +55,32 @@ class QuestionService(
     fun vote(question: Question,siteUser: SiteUser){
         question.voter.add(siteUser)
         questionRepository.save(question)
+    }
+    fun search(kw: String): Specification<Question> {
+         return object : Specification<Question>{
+            override fun toPredicate(
+                q: Root<Question>,
+                query: CriteriaQuery<*>?,
+                cb: CriteriaBuilder
+            ): Predicate {
+                return cb.conjunction()
+            }
+             fun search(
+                 q: Root<Question>,
+                 query: CriteriaQuery<*>?,
+                 cb: CriteriaBuilder):Predicate{
+                 val searchKw = "%"+kw+"%"
+                 val a : Join<Question, Answer> = q.join("answerList",JoinType.LEFT)
+                 val u1 : Join<Question,SiteUser> = q.join("author",JoinType.LEFT)
+                 val u2: Join<Answer,SiteUser> = a.join("author",JoinType.LEFT)
+                 return cb.or(
+                     cb.like(q.get("subject"),searchKw),
+                     cb.like(q.get("content"),searchKw),
+                     cb.like(a.get("content"),searchKw),
+                     cb.like(u1.get("username"),searchKw),
+                     cb.like(u2.get("username"),search())
+                 )
+             }
+        }
     }
 }
