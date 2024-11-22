@@ -45,7 +45,7 @@ class QuestionService(
         questionRepository.delete(question)
     }
     fun vote(question: Question,siteUser: SiteUser){
-        question.voter.plus(siteUser)
+        question.voter.add(siteUser)
         questionRepository.save(question)
     }
 }

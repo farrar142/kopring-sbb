@@ -28,5 +28,5 @@ class Answer {
     var modifyDate:LocalDateTime? = null
 
     @ManyToMany
-    var voter:Set<SiteUser> = emptySet()
+    var voter:MutableSet<SiteUser> = mutableSetOf()
 }
