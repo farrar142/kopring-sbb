@@ -11,13 +11,14 @@ import java.time.LocalDateTime
 class AnswerService(
     val answerRepository: AnswerRepository
 ){
-    fun create(question:Question,content:String,author:SiteUser){
+    fun create(question:Question,content:String,author:SiteUser):Answer{
         val a = Answer()
         a.question=question
         a.content=content
         a.author=author
         a.createDate = LocalDateTime.now()
         this.answerRepository.save(a)
+        return a
     }
     fun getAnswer(id:Int):Answer{
         val answer = answerRepository.findById(id)

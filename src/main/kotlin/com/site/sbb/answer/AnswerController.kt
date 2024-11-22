@@ -34,8 +34,8 @@ class AnswerController(
             model.addAttribute("question",q)
             return "question_detail"
         }
-        this.answerService.create(q,answerForm.content,u)
-        return String.format("redirect:/question/detail/%s",id)
+        val answer = this.answerService.create(q,answerForm.content,u)
+        return String.format("redirect:/question/detail/%s#answer_%s",id,answer.id)
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -55,7 +55,7 @@ class AnswerController(
         if (bindingResult.hasErrors())throw ResponseStatusException(HttpStatus.BAD_REQUEST,"수정권한이 없습니다.")
         val answer = answerService.getAnswer(id)
         answerService.modify(answer,answerForm.content)
-        return String.format("redirect:/question/detail/%s",answer.question.id)
+        return String.format("redirect:/question/detail/%s#answer_%s",answer.question.id,answer.id)
     }
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
