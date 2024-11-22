@@ -45,6 +45,8 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	//spring validation
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+	//markdown
+	implementation("org.commonmark:commonmark:0.21.0")
 }
 
 kotlin {
