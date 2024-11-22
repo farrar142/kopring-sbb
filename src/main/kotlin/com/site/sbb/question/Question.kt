@@ -8,9 +8,11 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import java.time.LocalDateTime
+import java.util.ArrayList
 
 @Entity
 class Question {
@@ -33,4 +35,7 @@ class Question {
     var author: SiteUser? = null
 
     var modifyDate:LocalDateTime? = null
+
+    @ManyToMany
+    var voter:Set<SiteUser> = emptySet()
 }
