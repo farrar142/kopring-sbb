@@ -63,6 +63,6 @@ class AnswerController(
         val answer = answerService.getAnswer(id)
         if (!answer.author?.username.equals(principal.name)) throw ResponseStatusException(HttpStatus.BAD_REQUEST,"삭제권한이 없습니다.")
         answerService.delete(answer)
-        return String.format("redirect/question/detail/%s",answer.question.id)
+        return String.format("redirect:/question/detail/%s",answer.question.id)
     }
 }
