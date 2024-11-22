@@ -28,8 +28,11 @@ class QuestionController(
     val userService: UserService
 ) {
     @GetMapping("/list")
-    fun list(model:Model,@RequestParam(value="page",defaultValue="0") page:Int):String{
-        val paging = this.questionService.getList(page)
+    fun list(model:Model,
+             @RequestParam(value="page",defaultValue="0") page:Int,
+             @RequestParam(value="kw", defaultValue = "") kw:String,
+    ):String{
+        val paging = this.questionService.getList(page,kw)
         model.addAttribute("paging",paging)
         return "question_list"
     }
