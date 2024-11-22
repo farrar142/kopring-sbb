@@ -23,10 +23,11 @@ import java.util.Optional
 class QuestionService(
     val questionRepository: QuestionRepository
 ) {
-    fun getList(page:Int):Page<Question>{
+    fun getList(page:Int,kw: String):Page<Question>{
         val sorts:List<Sort.Order> = ArrayList<Sort.Order>().plus(Sort.Order.desc("createDate"))
         val pageable: Pageable = PageRequest.of(page,10,Sort.by(sorts))
-        return this.questionRepository.findAll(pageable)
+        val spec = search(kw)
+        return this.questionRepository.findAll(spec,pageable)
     }
 
     fun getQuestion(id:Int):Question{

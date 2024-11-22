@@ -11,5 +11,5 @@ interface QuestionRepository:JpaRepository<Question,Int>   {
     fun findBySubjectAndContent(subject:String,content:String): Question
     fun findBySubjectLike(subject:String):List<Question>
     override fun findAll(pageable:Pageable):Page<Question>
-    fun findAll(spec:Specification<Question>,pageable: Pageable)
+    fun findAll(spec:Specification<Question>,pageable: Pageable):Page<Question>
 }
