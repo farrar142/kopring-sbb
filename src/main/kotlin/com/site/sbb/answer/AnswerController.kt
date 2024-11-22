@@ -71,6 +71,6 @@ class AnswerController(
         val answer = answerService.getAnswer(id)
         val siteUser = userService.getUser(principal.name)
         answerService.vote(answer,siteUser)
-        return String.format("redirect:/question/detail/%s",answer.question.id)
+        return String.format("redirect:/question/detail/%s#answer_%s",answer.question.id,answer.id)
     }
 }
