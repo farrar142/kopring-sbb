@@ -1,6 +1,7 @@
 package com.site.sbb.question
 
 import com.site.sbb.answer.AnswerForm
+import com.site.sbb.answer.AnswerService
 import com.site.sbb.user.SiteUser
 import com.site.sbb.user.UserService
 import jakarta.validation.Valid
@@ -25,7 +26,8 @@ import java.security.Principal
 @RequestMapping("/question")
 class QuestionController(
     val questionService: QuestionService,
-    val userService: UserService
+    val userService: UserService,
+    val answerService: AnswerService
 ) {
     @GetMapping("/list")
     fun list(model:Model,
@@ -38,9 +40,16 @@ class QuestionController(
     }
 
     @GetMapping("/detail/{id}")
-    fun detail(model :Model, @PathVariable("id") id : Int,answerForm:AnswerForm):String{
+    fun detail(model :Model,
+               @PathVariable("id") id : Int,
+               @RequestParam(value="answerPage", defaultValue = "0") answerPage:Int,
+               @RequestParam(value="answerOrdering", defaultValue = "vote") answerOrdering:String,
+               answerForm:AnswerForm):String{
         val q = this.questionService.getQuestion(id)
+        val answerPaging = this.answerService.getAnswers(q,answerPage,answerOrdering)
         model.addAttribute("question",q)
+        model.addAttribute("answerPaging",answerPaging)
+        model.addAttribute("answerOrdering",answerOrdering)
         return "question_detail"
     }
 
