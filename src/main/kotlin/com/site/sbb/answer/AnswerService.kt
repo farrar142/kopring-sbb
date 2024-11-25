@@ -4,6 +4,9 @@ import com.site.sbb.DataNotFoundException
 import com.site.sbb.question.Question
 import com.site.sbb.question.QuestionService
 import com.site.sbb.user.SiteUser
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
@@ -11,6 +14,14 @@ import java.time.LocalDateTime
 class AnswerService(
     val answerRepository: AnswerRepository
 ){
+    fun getAnswers(question:Question, page:Int,ordering: String):Page<Answer>{
+        val sorts:ArrayList<Sort.Order> = ArrayList()
+        if (ordering.equals("vote")) sorts.add(Sort.Order.desc("voter"))
+        else sorts.add(Sort.Order.desc("createDate"))
+        val pageable = PageRequest.of(page,10,Sort.by(sorts))
+        return answerRepository.findByQuestion(question,pageable)
+
+    }
     fun create(question:Question,content:String,author:SiteUser):Answer{
         val a = Answer()
         a.question=question
