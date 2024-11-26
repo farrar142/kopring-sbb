@@ -2,6 +2,7 @@ package com.site.sbb.question
 
 import com.site.sbb.answer.AnswerForm
 import com.site.sbb.answer.AnswerService
+import com.site.sbb.comment.CommentForm
 import com.site.sbb.user.SiteUser
 import com.site.sbb.user.UserService
 import jakarta.validation.Valid
@@ -44,7 +45,9 @@ class QuestionController(
                @PathVariable("id") id : Int,
                @RequestParam(value="answerPage", defaultValue = "0") answerPage:Int,
                @RequestParam(value="answerOrdering", defaultValue = "vote") answerOrdering:String,
-               answerForm:AnswerForm):String{
+               answerForm:AnswerForm,
+               commentForm: CommentForm,
+               ):String{
         val q = this.questionService.getQuestion(id)
         val answerPaging = this.answerService.getAnswers(q,answerPage,answerOrdering)
         model.addAttribute("question",q)
