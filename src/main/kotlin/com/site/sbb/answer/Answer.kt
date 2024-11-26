@@ -1,5 +1,6 @@
 package com.site.sbb.answer
 
+import com.site.sbb.comment.Comment
 import com.site.sbb.question.Question
 import com.site.sbb.user.SiteUser
 import jakarta.persistence.*
@@ -29,4 +30,7 @@ class Answer {
 
     @ManyToMany
     var voter:MutableSet<SiteUser> = mutableSetOf()
+
+    @OneToMany(mappedBy="answer",cascade= [CascadeType.REMOVE])
+    var commentList:MutableList<Comment> = mutableListOf()
 }
