@@ -65,7 +65,7 @@ class UserController (
             val sb = StringBuilder().run{
                 append(user.username)
                 append("계정의 비밀번호를 새롭게 초기화 했습니다.\n")
-                append("새 비밀번호는").append(newPassword).append("입니다.\n")
+                append("새 비밀번호는 ").append(newPassword).append(" 입니다.\n")
                 append("로그인 후 내 정보에서 새로 비밀번호를 지정해주세요")
             }
             simpleMailMessage.text = sb.toString()
