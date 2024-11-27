@@ -22,11 +22,11 @@ class AnswerService(
         return answerRepository.findByQuestion(question,pageable)
 
     }
-    fun getAnswersByUser(user: SiteUser,page:Int):Page<Answer>{
+    fun getAnswersByUser(author: SiteUser,page:Int):Page<Answer>{
         val sorts = ArrayList<Sort.Order>()
         sorts.add(Sort.Order.desc("createDate"))
         val pageable = PageRequest.of(page,10,Sort.by(sorts))
-        return answerRepository.findBy
+        return answerRepository.findByAuthor(author,pageable)
     }
     fun create(question:Question,content:String,author:SiteUser):Answer{
         val a = Answer()
