@@ -22,7 +22,7 @@ class CategoryService (
         return haveToCreate.map(this::createCategory)
     }
 
-    fun getCategoryList():List<Category>{
+    fun getList():List<Category>{
         return categoryRepository.findAll()
     }
 
