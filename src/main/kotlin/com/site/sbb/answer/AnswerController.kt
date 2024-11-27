@@ -1,5 +1,6 @@
 package com.site.sbb.answer
 
+import com.site.sbb.category.CategoryService
 import com.site.sbb.question.QuestionService
 import com.site.sbb.user.UserService
 import jakarta.validation.Valid
@@ -22,7 +23,8 @@ import java.security.Principal
 class AnswerController(
     val questionService:QuestionService,
     val answerService: AnswerService,
-    val userService:UserService
+    val userService:UserService,
+    val categoryService: CategoryService
     ) {
 
     @PreAuthorize("isAuthenticated()")
@@ -40,10 +42,14 @@ class AnswerController(
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    fun answerModify(@PathVariable("id") id:Int,answerForm: AnswerForm,principal: Principal):String {
+    fun answerModify(@PathVariable("id") id:Int,
+                     model: Model,answerForm: AnswerForm,
+                     principal: Principal):String {
         val answer = answerService.getAnswer(id)
         if (!answer.author?.username.equals(principal.name))throw ResponseStatusException(HttpStatus.BAD_REQUEST,"수정권한이 없습니다.")
         answerForm.content= answer.content
+        val categoryList = categoryService.getList()
+        model.addAttribute("categoryList",categoryList)
         return "answer_form"
     }
     @PreAuthorize("isAuthenticated()")

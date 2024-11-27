@@ -2,6 +2,7 @@ package com.site.sbb.question
 
 import com.site.sbb.answer.AnswerForm
 import com.site.sbb.answer.AnswerService
+import com.site.sbb.category.CategoryService
 import com.site.sbb.comment.CommentForm
 import com.site.sbb.user.SiteUser
 import com.site.sbb.user.UserService
@@ -28,15 +29,18 @@ import java.security.Principal
 class QuestionController(
     val questionService: QuestionService,
     val userService: UserService,
-    val answerService: AnswerService
+    val answerService: AnswerService,
+    val categoryService: CategoryService
 ) {
     @GetMapping("/list")
     fun list(model:Model,
              @RequestParam(value="page",defaultValue="0") page:Int,
              @RequestParam(value="kw", defaultValue = "") kw:String,
     ):String{
-        val paging = this.questionService.getList(page,kw)
+        val categoryList = categoryService.getList()
+        val paging = questionService.getList(page,kw)
         model.addAttribute("paging",paging)
+        model.addAttribute("categoryList",categoryList)
         return "question_list"
     }
 
@@ -50,15 +54,19 @@ class QuestionController(
                ):String{
         val q = this.questionService.getQuestion(id)
         val answerPaging = this.answerService.getAnswers(q,answerPage,answerOrdering)
+        val categoryList = categoryService.getList()
         model.addAttribute("question",q)
         model.addAttribute("answerPaging",answerPaging)
         model.addAttribute("answerOrdering",answerOrdering)
+        model.addAttribute("categoryList",categoryList)
         return "question_detail"
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/create")
-    fun questionCreate(questionForm: QuestionForm):String{
+    fun questionCreate(model: Model,questionForm: QuestionForm):String {
+        val categoryList = categoryService.getList()
+        model.addAttribute("categoryList",categoryList)
         return "question_form";
     }
 
@@ -73,11 +81,15 @@ class QuestionController(
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify/{id}")
-    fun questionModify(@PathVariable("id") id:Int,questionForm: QuestionForm,principal: Principal):String{
+    fun questionModify(@PathVariable("id") id:Int,
+                       model: Model,questionForm: QuestionForm,
+                       principal: Principal):String{
         val question = questionService.getQuestion(id)
         if (!question.author?.username.equals(principal.name))throw ResponseStatusException(HttpStatus.BAD_REQUEST,"수정권한이 없습니다.")
         questionForm.subject = question.subject
         questionForm.content = question.content
+        val categoryList = categoryService.getList()
+        model.addAttribute("categoryList",categoryList)
         return "question_form"
     }
 
