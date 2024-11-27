@@ -1,5 +1,9 @@
 package com.site.sbb.user
 
+import com.site.sbb.answer.AnswerService
+import com.site.sbb.category.CategoryService
+import com.site.sbb.comment.CommentService
+import com.site.sbb.question.QuestionService
 import jakarta.validation.Valid
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.mail.MailSender
@@ -44,6 +48,7 @@ class UserController (
         }
         return "redirect:/"
     }
+
     @GetMapping("/reset_password")
     fun resetPassword(model: Model):String{
         model.addAttribute("error",false)
@@ -51,6 +56,7 @@ class UserController (
         model.addAttribute("email",false)
         return "reset_password"
     }
+
     @PostMapping("/reset_password")
     fun resetPassword(model: Model,
                       @RequestParam(value="email") email:String):String{
@@ -71,7 +77,7 @@ class UserController (
             simpleMailMessage.text = sb.toString()
             userService.updatePassword(user,newPassword)
             Thread{mailSender.send(simpleMailMessage)}.start()
-        }catch (e:Exception){
+        }catch (e:Exception) {
             error = true
             sendConfirm = false
         }
