@@ -5,4 +5,5 @@ import java.util.Optional
 
 interface UserRepository : JpaRepository<SiteUser,Long> {
     fun findByusername(username:String):Optional<SiteUser>
+    fun findByEmail(email:String):Optional<SiteUser>
 }
