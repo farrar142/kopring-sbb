@@ -2,6 +2,7 @@ package com.site.sbb.question
 
 import com.site.sbb.DataNotFoundException
 import com.site.sbb.answer.Answer
+import com.site.sbb.category.Category
 import com.site.sbb.user.SiteUser
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
@@ -26,7 +27,14 @@ class QuestionService(
     fun getList(page:Int,kw: String):Page<Question>{
         val sorts:List<Sort.Order> = ArrayList<Sort.Order>().plus(Sort.Order.desc("createDate"))
         val pageable: Pageable = PageRequest.of(page,10,Sort.by(sorts))
-        val spec = search(kw)
+        val spec = search(kw,null)
+        return this.questionRepository.findAll(spec,pageable)
+    }
+
+    fun getListByCategory(page:Int,kw:String,category: Category):Page<Question>{
+        val sorts:List<Sort.Order> = ArrayList<Sort.Order>().plus(Sort.Order.desc("createDate"))
+        val pageable: Pageable = PageRequest.of(page,10,Sort.by(sorts))
+        val spec = search(kw,category)
         return this.questionRepository.findAll(spec,pageable)
     }
 
@@ -57,16 +65,14 @@ class QuestionService(
         question.voter.add(siteUser)
         questionRepository.save(question)
     }
-    fun search(kw: String): Specification<Question> {
+    fun search(kw: String,category: Category?): Specification<Question> {
          return object : Specification<Question>{
             override fun toPredicate(
                 q: Root<Question>,
                 query: CriteriaQuery<*>?,
                 cb: CriteriaBuilder
             ): Predicate {
-                var predicate = cb.conjunction()
-                if (kw.isNotEmpty()) predicate = this.search(q,query,cb)
-                return predicate
+                return this.search(q,query,cb)
             }
              fun search(
                  q: Root<Question>,
@@ -76,13 +82,23 @@ class QuestionService(
                  val a : Join<Question, Answer> = q.join("answerList",JoinType.LEFT)
                  val u1 : Join<Question,SiteUser> = q.join("author",JoinType.LEFT)
                  val u2: Join<Answer,SiteUser> = a.join("author",JoinType.LEFT)
-                 return cb.or(
+                 var conjunction = cb.conjunction()
+                 conjunction = cb.and(conjunction,filterByCategory(q,query,cb))
+                 if (kw.isNotEmpty()) conjunction = cb.and(conjunction,cb.or(
                      cb.like(q.get("subject"),searchKw),
                      cb.like(q.get("content"),searchKw),
                      cb.like(a.get("content"),searchKw),
                      cb.like(u1.get("username"),searchKw),
                      cb.like(u2.get("username"),searchKw)
-                 )
+                 ))
+                 return conjunction
+             }
+             private fun filterByCategory(
+                 q:Root<Question>,
+                 query:CriteriaQuery<*>?,
+                 cb:CriteriaBuilder
+                 ):Predicate{
+                 return category?.let{cb.equal(q.get<Category>("category"),it)}?:cb.conjunction()
              }
         }
     }

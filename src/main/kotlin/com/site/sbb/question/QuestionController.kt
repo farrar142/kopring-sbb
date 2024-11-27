@@ -41,6 +41,21 @@ class QuestionController(
         val paging = questionService.getList(page,kw)
         model.addAttribute("paging",paging)
         model.addAttribute("categoryList",categoryList)
+        model.addAttribute("category",null)
+        return "question_list"
+    }
+
+    @GetMapping("/category/{categoryName}")
+    fun list(model:Model,
+             @PathVariable(value="categoryName") categoryName: String,
+             @RequestParam(value="page", defaultValue = "0") page:Int,
+             @RequestParam(value="kw",defaultValue="") kw:String):String{
+        val category = categoryService.getCategoryByName(categoryName)
+        val categoryList = categoryService.getList()
+        val paging = questionService.getListByCategory(page,kw,category)
+        model.addAttribute("paging",paging)
+        model.addAttribute("categoryList",categoryList)
+        model.addAttribute("category",category)
         return "question_list"
     }
 
