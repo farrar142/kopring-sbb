@@ -90,7 +90,12 @@ class QuestionController(
     fun questionCreate(@Valid questionForm:QuestionForm,br:BindingResult,principal:Principal):String{
         if (br.hasErrors())return "question_form";
         val u = userService.getUser(principal.name)
-        val q = questionService.create(subject=questionForm.subject,content=questionForm.content,author=u)
+        val category = categoryService.getCategoryByName(questionForm.category)
+        val q = questionService.create(
+            subject=questionForm.subject,
+            content=questionForm.content,
+            category=category,
+            author=u)
         return "redirect:/question/list"
     }
 
