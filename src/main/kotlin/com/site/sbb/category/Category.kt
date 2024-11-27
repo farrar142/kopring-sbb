@@ -19,5 +19,5 @@ class Category {
     var name:String =""
 
     @OneToMany(mappedBy = "category",cascade=[CascadeType.REMOVE])
-    var questionList:List<Question> = mutableListOf()
+    var questionList:MutableList<Question> = mutableListOf()
 }

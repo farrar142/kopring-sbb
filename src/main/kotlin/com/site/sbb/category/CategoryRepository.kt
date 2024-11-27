@@ -5,4 +5,5 @@ import java.util.Optional
 
 interface CategoryRepository :JpaRepository<Category,Int> {
     fun findByName(name:String):Optional<Category>
+    fun findByNameIn(vararg names:String):List<Category>
 }

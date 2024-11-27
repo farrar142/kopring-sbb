@@ -1,7 +1,6 @@
 package com.site.sbb
 
-import com.site.sbb.answer.AnswerRepository
-import com.site.sbb.question.QuestionService
+import com.site.sbb.category.CategoryService
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,16 +10,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
 class SbbApplicationTests{
+
 	@Autowired
-	lateinit var questionService: QuestionService
+	lateinit var categoryService: CategoryService
 	@Test
 	fun testJpa(){
-
-//		for (i in 1..300) {
-//			val subject = String.format("테스트 데이터입니다:[%03d]", i)
-//			val content = "내용무"
-//			questionService.create(subject, content,null)
-//		}
+		categoryService.getOrCreateCategories("1번게시판","2번게시판","3번게시판","4번게시판")
 	}
 
 }

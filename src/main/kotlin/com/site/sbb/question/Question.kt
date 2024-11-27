@@ -1,6 +1,7 @@
 package com.site.sbb.question
 
 import com.site.sbb.answer.Answer
+import com.site.sbb.category.Category
 import com.site.sbb.comment.Comment
 import com.site.sbb.user.SiteUser
 import jakarta.persistence.CascadeType
@@ -42,4 +43,7 @@ class Question {
 
     @OneToMany(mappedBy="question",cascade= [CascadeType.REMOVE])
     var commentList:MutableList<Comment> = mutableListOf()
+
+    @ManyToOne
+    var category:Category?=null
 }

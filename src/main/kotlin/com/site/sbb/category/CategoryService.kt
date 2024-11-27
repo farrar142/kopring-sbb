@@ -14,6 +14,14 @@ class CategoryService (
         return category
     }
 
+    fun getOrCreateCategories(vararg  names:String):List<Category>{
+        val exists = categoryRepository.findByNameIn(*names)
+        val targetSet = names.toSet()
+        val existsSet = exists.map { it.name }.toSet()
+        val haveToCreate = targetSet.subtract(existsSet)
+        return haveToCreate.map(this::createCategory)
+    }
+
     fun getCategoryList():List<Category>{
         return categoryRepository.findAll()
     }
