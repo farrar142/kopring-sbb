@@ -68,7 +68,7 @@ class QuestionController(
                commentForm: CommentForm,
                ):String{
         val q = this.questionService.getQuestion(id)
-        val answerPaging = this.answerService.getAnswers(q,answerPage,answerOrdering)
+        val answerPaging = this.answerService.getList(q,answerPage,answerOrdering)
         val categoryList = categoryService.getList()
         model.addAttribute("question",q)
         model.addAttribute("answerPaging",answerPaging)

@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class AnswerService(
     val answerRepository: AnswerRepository
 ){
-    fun getAnswers(question:Question, page:Int,ordering: String):Page<Answer>{
+    fun getList(question:Question, page:Int,ordering: String):Page<Answer>{
         val sorts:ArrayList<Sort.Order> = ArrayList()
         if (ordering.equals("vote")) sorts.add(Sort.Order.desc("voter"))
         else sorts.add(Sort.Order.desc("createDate"))
@@ -22,7 +22,7 @@ class AnswerService(
         return answerRepository.findByQuestion(question,pageable)
 
     }
-    fun getAnswersByUser(author: SiteUser,page:Int):Page<Answer>{
+    fun getListByAuthor(author: SiteUser,page:Int):Page<Answer>{
         val sorts = ArrayList<Sort.Order>()
         sorts.add(Sort.Order.desc("createDate"))
         val pageable = PageRequest.of(page,10,Sort.by(sorts))
