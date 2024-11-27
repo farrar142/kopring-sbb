@@ -23,4 +23,9 @@ class UserService(val userRepository: UserRepository,val passwordEncoder: Passwo
         userRepository.save(u)
         return u
     }
+    fun updatePassword(user:SiteUser,password: String):SiteUser{
+        user.password = passwordEncoder.encode(password)
+        userRepository.save(user)
+        return user
+    }
 }
