@@ -38,6 +38,13 @@ class QuestionService(
         return this.questionRepository.findAll(spec,pageable)
     }
 
+    fun getListByAuthor(page:Int,author:SiteUser):Page<Question>{
+        val sorts:List<Sort.Order> = ArrayList<Sort.Order>().plus(Sort.Order.desc("createDate"))
+        val pageable: Pageable = PageRequest.of(page,10,Sort.by(sorts))
+        val spec = search("",author=author)
+        return this.questionRepository.findAll(spec,pageable)
+    }
+
     fun getQuestion(id:Int):Question{
         val qr =  this.questionRepository.findById(id)
         if (qr.isPresent) return qr.get()
@@ -66,7 +73,7 @@ class QuestionService(
         question.voter.add(siteUser)
         questionRepository.save(question)
     }
-    fun search(kw: String,category: Category?): Specification<Question> {
+    fun search(kw: String,category: Category?=null,author:SiteUser?=null): Specification<Question> {
          return object : Specification<Question>{
             override fun toPredicate(
                 q: Root<Question>,
@@ -85,6 +92,7 @@ class QuestionService(
                  val u2: Join<Answer,SiteUser> = a.join("author",JoinType.LEFT)
                  var conjunction = cb.conjunction()
                  conjunction = cb.and(conjunction,filterByCategory(q,query,cb))
+                 conjunction = cb.and(conjunction,filterByAuthor(q,query,cb))
                  if (kw.isNotEmpty()) conjunction = cb.and(conjunction,cb.or(
                      cb.like(q.get("subject"),searchKw),
                      cb.like(q.get("content"),searchKw),
@@ -100,6 +108,13 @@ class QuestionService(
                  cb:CriteriaBuilder
                  ):Predicate{
                  return category?.let{cb.equal(q.get<Category>("category"),it)}?:cb.conjunction()
+             }
+             private fun filterByAuthor(
+                 q:Root<Question>,
+                 query:CriteriaQuery<*>?,
+                 cb:CriteriaBuilder
+             ):Predicate{
+                 return author?.let{cb.equal(q.get<SiteUser>("author"),it)}?:cb.conjunction()
              }
         }
     }
