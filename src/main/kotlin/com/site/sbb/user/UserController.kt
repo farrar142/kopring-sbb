@@ -3,6 +3,7 @@ package com.site.sbb.user
 import jakarta.validation.Valid
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -37,6 +38,14 @@ class UserController (val userService: UserService){
         }
         return "redirect:/"
     }
+    @GetMapping("/reset_password")
+    fun resetPassword(model: Model):String{
+        model.addAttribute("error",false)
+        model.addAttribute("sendConfirm",false)
+        model.addAttribute("email",false)
+        return "reset_password"
+    }
+
 
     @GetMapping("/login")
     fun login():String{
