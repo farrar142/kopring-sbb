@@ -11,5 +11,6 @@ class QuestionForm{
     @field:NotEmpty(message="내용은 필수항목입니다.")
     var content: String=""
 
+    @field:NotEmpty(message="카테고리 필수항목입니다.")
     var category: String =""
 }
