@@ -2,16 +2,22 @@ package com.site.sbb.user
 
 import jakarta.validation.Valid
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.mail.MailSender
+import org.springframework.mail.SimpleMailMessage
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import java.util.UUID
 
 @Controller
 @RequestMapping("/user")
-class UserController (val userService: UserService){
+class UserController (
+                      val userService: UserService,
+                      val mailSender:MailSender){
     @GetMapping("/signup")
     fun signup(userCreateForm: UserCreateForm):String{
         return "signup_form"
@@ -45,7 +51,35 @@ class UserController (val userService: UserService){
         model.addAttribute("email",false)
         return "reset_password"
     }
-
+    @PostMapping("/reset_password")
+    fun resetPassword(model: Model,
+                      @RequestParam(value="email") email:String):String{
+        var error = false
+        var sendConfirm = true
+        try{
+            val user = userService.getUserByEmail(email)
+            val simpleMailMessage = SimpleMailMessage()
+            simpleMailMessage.setTo(email)
+            simpleMailMessage.subject="계정 정보입니다."
+            val newPassword = UUID.randomUUID().toString().replace("-","")
+            val sb = StringBuilder().run{
+                append(user.username)
+                append("계정의 비밀번호를 새롭게 초기화 했습니다.\n")
+                append("새 비밀번호는").append(newPassword).append("입니다.\n")
+                append("로그인 후 내 정보에서 새로 비밀번호를 지정해주세요")
+            }
+            simpleMailMessage.text = sb.toString()
+            userService.updatePassword(user,newPassword)
+            Thread{mailSender.send(simpleMailMessage)}.start()
+        }catch (e:Exception){
+            error = true
+            sendConfirm = false
+        }
+        model.addAttribute("error", error)
+        model.addAttribute("sendConfirm", sendConfirm)
+        model.addAttribute("email", email)
+        return "reset_password"
+    }
 
     @GetMapping("/login")
     fun login():String{
