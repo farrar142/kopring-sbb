@@ -13,6 +13,11 @@ class UserService(val userRepository: UserRepository,val passwordEncoder: Passwo
         if (siteUser.isPresent)return siteUser.get()
         throw DataNotFoundException("siteuser not found")
     }
+    fun getUserByEmail(email:String):SiteUser{
+        val siteUser = userRepository.findByEmail(email)
+        if (siteUser.isPresent)return siteUser.get()
+        throw DataNotFoundException("siteuser not found")
+    }
     fun create(username:String,email:String,password:String):SiteUser{
         val u = SiteUser()
         u.username = username
