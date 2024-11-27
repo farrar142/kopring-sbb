@@ -33,16 +33,16 @@ class CommentService(val commentRepository: CommentRepository) {
 
     fun deleteComment(comment:Comment){commentRepository.delete(comment)}
 
-    fun getCommentList(question: Question?,answer: Answer?):List<Comment>{
+    fun getList(question: Question?,answer: Answer?):List<Comment>{
         if (question!=null)return commentRepository.findByQuestion(question)
         else if (answer!=null)return commentRepository.findByAnswer(answer)
         throw DataNotFoundException("comment not found")
     }
 
-    fun getUserCommentList(user: SiteUser,page:Int):Page<Comment>{
+    fun getListByAuthor(author: SiteUser,page:Int):Page<Comment>{
         val sorts = ArrayList<Sort.Order>();
         sorts.add(Sort.Order.desc("createDate"))
-        val page = PageRequest.of(page,10,Sort.by(sorts))
-        return commentRepository.findByAuthor(user,page)
+        val pageable = PageRequest.of(page,10,Sort.by(sorts))
+        return commentRepository.findByAuthor(author,pageable)
     }
 }
