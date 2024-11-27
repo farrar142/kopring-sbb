@@ -8,6 +8,7 @@ import jakarta.validation.Valid
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.mail.MailSender
 import org.springframework.mail.SimpleMailMessage
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
-import java.util.UUID
+import java.security.Principal
+import java.util.*
 
 @Controller
 @RequestMapping("/user")
@@ -57,7 +59,24 @@ class UserController (
                             qPage:Int,aPage:Int,cPage:Int){
         val categoryList = categoryService.getList()
         val questionList =questionService.getListByAuthor(user,qPage)
-        val answerList =
+        val answerList = answerService.getListByAuthor(user,aPage)
+        val commentList = commentService.getListByAuthor(user,cPage)
+
+        model.addAttribute("category_list", categoryList);
+        model.addAttribute("question_paging", questionList)
+        model.addAttribute("answer_paging", answerList)
+        model.addAttribute("comment_paging", commentList)
+        model.addAttribute("user", user)
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    fun profile(model:Model,principal:Principal,
+                @RequestParam(value="qPage", defaultValue = "0") qPage:Int,
+                @RequestParam(value="aPage", defaultValue = "0") aPage:Int,
+                @RequestParam(value="cPage", defaultValue = "0") cPage:Int):String{
+        val user = userService.getUser(principal.name)
+        setContents(model,user,qPage=qPage,aPage=aPage,cPage=cPage)
+        return "profile_detail"
     }
 
     @GetMapping("/reset_password")
