@@ -38,7 +38,7 @@ class QuestionService(
         return this.questionRepository.findAll(spec,pageable)
     }
 
-    fun getListByAuthor(page:Int,author:SiteUser):Page<Question>{
+    fun getListByAuthor(author:SiteUser,page:Int,):Page<Question>{
         val sorts:List<Sort.Order> = ArrayList<Sort.Order>().plus(Sort.Order.desc("createDate"))
         val pageable: Pageable = PageRequest.of(page,10,Sort.by(sorts))
         val spec = search("",author=author)

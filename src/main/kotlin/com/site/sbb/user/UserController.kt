@@ -21,7 +21,11 @@ import java.util.UUID
 @RequestMapping("/user")
 class UserController (
                       val userService: UserService,
-                      val mailSender:MailSender){
+                      val mailSender:MailSender,
+                      val categoryService: CategoryService,
+                      val questionService: QuestionService,
+                      val answerService: AnswerService,
+                      val commentService: CommentService){
     @GetMapping("/signup")
     fun signup(userCreateForm: UserCreateForm):String{
         return "signup_form"
@@ -47,6 +51,13 @@ class UserController (
             return "signup_form"
         }
         return "redirect:/"
+    }
+
+    private fun setContents(model: Model,user: SiteUser,
+                            qPage:Int,aPage:Int,cPage:Int){
+        val categoryList = categoryService.getList()
+        val questionList =questionService.getListByAuthor(user,qPage)
+        val answerList =
     }
 
     @GetMapping("/reset_password")
