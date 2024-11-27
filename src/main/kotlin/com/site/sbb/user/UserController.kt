@@ -62,14 +62,18 @@ class UserController (
         val answerList = answerService.getListByAuthor(user,aPage)
         val commentList = commentService.getListByAuthor(user,cPage)
 
-        model.addAttribute("category_list", categoryList);
-        model.addAttribute("question_paging", questionList)
-        model.addAttribute("answer_paging", answerList)
-        model.addAttribute("comment_paging", commentList)
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("questionPaging", questionList)
+        model.addAttribute("answerPaging", answerList)
+        model.addAttribute("commentPaging", commentList)
         model.addAttribute("user", user)
+        model.addAttribute("qPage",qPage)
+        model.addAttribute("aPage",aPage)
+        model.addAttribute("cPage",cPage)
     }
 
     @PreAuthorize("isAuthenticated()")
+    @GetMapping("/profile")
     fun profile(model:Model,principal:Principal,
                 @RequestParam(value="qPage", defaultValue = "0") qPage:Int,
                 @RequestParam(value="aPage", defaultValue = "0") aPage:Int,
