@@ -1,10 +1,10 @@
 package com.site.sbb.user
 
 import com.site.sbb.DataNotFoundException
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import com.site.sbb.auth.KakaoInfo
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.Optional
+import java.util.*
 
 @Service
 class UserService(val userRepository: UserRepository,val passwordEncoder: PasswordEncoder) {
@@ -40,4 +40,15 @@ class UserService(val userRepository: UserRepository,val passwordEncoder: Passwo
         userRepository.save(user)
         return user
     }
+
+    fun getOrCreateKakaoUser(info: KakaoInfo):UserContainer{
+        val email = "${info.id}@kakao.com"
+        val user = userRepository.findByEmail(email)
+        val password = UUID.randomUUID().toString()
+        if (user.isPresent) return UserContainer(user.get(),password)
+        val tempUserName = "${info.id}WithKakao"
+        return UserContainer(this.create(tempUserName,email,password),password)
+    }
+
+    class UserContainer(val user: SiteUser, val password: String){}
 }

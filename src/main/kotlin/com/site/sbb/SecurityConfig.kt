@@ -26,7 +26,7 @@ class SecurityConfig {
         http.authorizeHttpRequests{request->request.requestMatchers(AntPathRequestMatcher("/**")).permitAll()}
             .csrf{csrf->csrf.ignoringRequestMatchers(AntPathRequestMatcher("/h2-console/**"))}
             .headers{headers->headers.addHeaderWriter(XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))}
-            .formLogin{form->form.loginPage("/user/login").defaultSuccessUrl(("/"))}
+            .formLogin{form->form.loginPage("/auth/login").defaultSuccessUrl(("/"))}
             .logout { logout ->logout.logoutRequestMatcher(AntPathRequestMatcher("/user/logout")).logoutSuccessUrl("/").invalidateHttpSession(true)}
             .sessionManagement{session->session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS)}
         return http.build()
