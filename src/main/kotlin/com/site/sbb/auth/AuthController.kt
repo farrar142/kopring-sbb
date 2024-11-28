@@ -1,9 +1,9 @@
 package com.site.sbb.auth
 
-import com.site.sbb.user.SiteUser
 import com.site.sbb.user.UserCreateForm
 import com.site.sbb.user.UserService
 import jakarta.validation.Valid
+import org.springframework.core.env.Environment
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.mail.MailSender
 import org.springframework.mail.SimpleMailMessage
@@ -14,17 +14,29 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 
 @Controller
 @RequestMapping("/auth")
 class AuthController (
-    val userService: UserService,
-    val mailSender: MailSender,
+    private val userService: UserService,
+    private val mailSender: MailSender,
+    private val env: Environment
 ){
     @GetMapping("/signup")
     fun signup(userCreateForm: UserCreateForm):String{
         return "signup_form"
+    }
+
+    @GetMapping("/kakao/login")
+    fun kakaologin():String{
+        val sb = StringBuilder()
+        sb.append("redirect:").append("http://kauth.kakao.com/oauth/authorize")
+        sb.append("?client_id=").append(env.getProperty("KAKAO_CLIENT_KEY"))
+        sb.append("&redirect_uri=").append(env.getProperty("KAKAO_REDIRECT_URI"))
+        sb.append("&response_type=").append("code")
+        return sb.toString()
     }
 
     @PostMapping("/signup")
