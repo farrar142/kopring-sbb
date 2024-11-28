@@ -36,12 +36,14 @@ class QuestionController(
     fun list(model:Model,
              @RequestParam(value="page",defaultValue="0") page:Int,
              @RequestParam(value="kw", defaultValue = "") kw:String,
+             @RequestParam(value="ordering", defaultValue = "createDate") ordering:String,
     ):String{
         val categoryList = categoryService.getList()
-        val paging = questionService.getList(page,kw)
+        val paging = questionService.getList(page,kw,ordering)
         model.addAttribute("paging",paging)
         model.addAttribute("categoryList",categoryList)
         model.addAttribute("category",null)
+        model.addAttribute("ordering",ordering)
         return "question_list"
     }
 
@@ -49,13 +51,16 @@ class QuestionController(
     fun list(model:Model,
              @PathVariable(value="categoryName") categoryName: String,
              @RequestParam(value="page", defaultValue = "0") page:Int,
-             @RequestParam(value="kw",defaultValue="") kw:String):String{
+             @RequestParam(value="kw",defaultValue="") kw:String,
+             @RequestParam(value="ordering", defaultValue = "createDate") ordering:String,
+             ):String{
         val category = categoryService.getCategoryByName(categoryName)
         val categoryList = categoryService.getList()
-        val paging = questionService.getListByCategory(page,kw,category)
+        val paging = questionService.getListByCategory(page,kw,category,ordering)
         model.addAttribute("paging",paging)
         model.addAttribute("categoryList",categoryList)
         model.addAttribute("category",category)
+        model.addAttribute("ordering",ordering)
         return "question_list"
     }
 

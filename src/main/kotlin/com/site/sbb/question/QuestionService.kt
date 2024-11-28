@@ -3,9 +3,12 @@ package com.site.sbb.question
 import com.site.sbb.DataNotFoundException
 import com.site.sbb.answer.Answer
 import com.site.sbb.category.Category
+import com.site.sbb.comment.Comment
 import com.site.sbb.user.SiteUser
+import jakarta.persistence.Entity
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
+import jakarta.persistence.criteria.Expression
 import jakarta.persistence.criteria.Join
 import jakarta.persistence.criteria.JoinType
 import jakarta.persistence.criteria.Predicate
@@ -24,17 +27,15 @@ import java.util.Optional
 class QuestionService(
     val questionRepository: QuestionRepository
 ) {
-    fun getList(page:Int,kw: String):Page<Question>{
-        val sorts:List<Sort.Order> = ArrayList<Sort.Order>().plus(Sort.Order.desc("createDate"))
-        val pageable: Pageable = PageRequest.of(page,10,Sort.by(sorts))
-        val spec = search(kw,null)
+    fun getList(page:Int,kw: String,ordering: String?):Page<Question>{
+        val pageable: Pageable = PageRequest.of(page,10)
+        val spec = search(kw,null,ordering=ordering)
         return this.questionRepository.findAll(spec,pageable)
     }
 
-    fun getListByCategory(page:Int,kw:String,category: Category):Page<Question>{
-        val sorts:List<Sort.Order> = ArrayList<Sort.Order>().plus(Sort.Order.desc("createDate"))
-        val pageable: Pageable = PageRequest.of(page,10,Sort.by(sorts))
-        val spec = search(kw,category)
+    fun getListByCategory(page:Int,kw:String,category: Category,ordering:String?):Page<Question>{
+        val pageable: Pageable = PageRequest.of(page,10)
+        val spec = search(kw,category, ordering = ordering)
         return this.questionRepository.findAll(spec,pageable)
     }
 
@@ -73,7 +74,8 @@ class QuestionService(
         question.voter.add(siteUser)
         questionRepository.save(question)
     }
-    fun search(kw: String,category: Category?=null,author:SiteUser?=null): Specification<Question> {
+    fun search(kw: String,category: Category?=null,author:SiteUser?=null,
+               ordering:String?=null): Specification<Question> {
          return object : Specification<Question>{
             override fun toPredicate(
                 q: Root<Question>,
@@ -100,6 +102,11 @@ class QuestionService(
                      cb.like(u1.get("username"),searchKw),
                      cb.like(u2.get("username"),searchKw)
                  ))
+                 when (ordering){
+                      "latestAnswer"->orderByLatestAnswer(q,query,cb)
+                      "latestComment"->orderByLatestComment(q,query,cb)
+                      else -> orderByCreateDate(q,query,cb)
+                 }
                  return conjunction
              }
              private fun filterByCategory(
@@ -116,6 +123,40 @@ class QuestionService(
              ):Predicate{
                  return author?.let{cb.equal(q.get<SiteUser>("author"),it)}?:cb.conjunction()
              }
+             private fun <X> orderBy(
+                 q:Root<Question>,
+                 query:CriteriaQuery<*>?,
+                 cb:CriteriaBuilder,
+                 subRootCls:Class<X>){
+                 query?.let{
+                     val subquery = it.subquery(LocalDateTime::class.java)
+                     val subRoot = subquery.from(subRootCls)
+                     val createDateExpr = subRoot.get<LocalDateTime>("createDate");
+                     val subLookUpRoot = subRoot.get<Question>("question")
+                     subquery.select(cb.greatest(createDateExpr))
+                         .where(cb.equal(subLookUpRoot,q))
+                     val subqueryExpr = cb.coalesce(subquery,q.get("createDate"))
+                     it.orderBy(cb.desc(subqueryExpr))
+                 }
+             }
+
+             private fun orderByLatestAnswer(
+                 q:Root<Question>,
+                 query:CriteriaQuery<*>?,
+                 cb:CriteriaBuilder
+             ){orderBy(q,query,cb,Answer::class.java)}
+
+             private fun orderByLatestComment(
+                 q:Root<Question>,
+                 query:CriteriaQuery<*>?,
+                 cb:CriteriaBuilder
+             ){orderBy(q,query,cb,Comment::class.java)}
+
+             private fun orderByCreateDate(
+                 q:Root<Question>,
+                 query:CriteriaQuery<*>?,
+                 cb:CriteriaBuilder
+             ){query?.let{cb.desc(q.get<LocalDateTime>("createDate"))}}
         }
     }
 }
