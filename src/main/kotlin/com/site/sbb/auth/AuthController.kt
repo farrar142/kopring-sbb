@@ -1,6 +1,5 @@
 package com.site.sbb.auth
 
-import com.site.sbb.user.UserCreateForm
 import com.site.sbb.user.UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.server.ResponseStatusException
-import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 
 @Controller
