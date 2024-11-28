@@ -79,6 +79,8 @@ class QuestionController(
         model.addAttribute("answerPaging",answerPaging)
         model.addAttribute("answerOrdering",answerOrdering)
         model.addAttribute("categoryList",categoryList)
+
+        Thread{questionService.increaseViews(q)}.start()
         return "question_detail"
     }
 

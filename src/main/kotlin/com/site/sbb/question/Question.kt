@@ -46,4 +46,6 @@ class Question {
 
     @ManyToOne
     var category:Category?=null
+
+    var views: Int = 0
 }
