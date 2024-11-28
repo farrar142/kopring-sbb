@@ -51,6 +51,7 @@ class QuestionService(
         if (qr.isPresent) return qr.get()
         throw DataNotFoundException("question not found")
     }
+
     fun create(subject:String,content:String,author:SiteUser,category: Category):Question{
         val q = Question()
         q.subject=subject
@@ -60,6 +61,7 @@ class QuestionService(
         questionRepository.save(q)
         return q
     }
+
     fun modify(question: Question,subject: String,content: String){
         question.subject=subject
         question.content=content
@@ -70,10 +72,17 @@ class QuestionService(
     fun delete(question: Question){
         questionRepository.delete(question)
     }
+
     fun vote(question: Question,siteUser: SiteUser){
         question.voter.add(siteUser)
         questionRepository.save(question)
     }
+
+    fun increaseViews(question:Question){
+        question.views++
+        questionRepository.save(question)
+    }
+
     fun search(kw: String,category: Category?=null,author:SiteUser?=null,
                ordering:String?=null): Specification<Question> {
          return object : Specification<Question>{
