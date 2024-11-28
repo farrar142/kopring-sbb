@@ -13,11 +13,13 @@ class UserService(val userRepository: UserRepository,val passwordEncoder: Passwo
         if (siteUser.isPresent)return siteUser.get()
         throw DataNotFoundException("siteuser not found")
     }
+
     fun getUserByEmail(email:String):SiteUser{
         val siteUser = userRepository.findByEmail(email)
         if (siteUser.isPresent)return siteUser.get()
         throw DataNotFoundException("siteuser not found")
     }
+
     fun create(username:String,email:String,password:String):SiteUser{
         val u = SiteUser()
         u.username = username
@@ -28,6 +30,11 @@ class UserService(val userRepository: UserRepository,val passwordEncoder: Passwo
         userRepository.save(u)
         return u
     }
+
+    fun isMatchPassword(user:SiteUser, password:String):Boolean{
+        return this.passwordEncoder.matches(password,user.password)
+    }
+
     fun updatePassword(user:SiteUser,password: String):SiteUser{
         user.password = passwordEncoder.encode(password)
         userRepository.save(user)

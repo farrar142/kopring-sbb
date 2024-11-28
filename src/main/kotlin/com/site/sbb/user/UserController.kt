@@ -74,12 +74,36 @@ class UserController (
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
-    fun profile(model:Model,principal:Principal,
+    fun profile(model:Model,
+                userPasswordChangeForm: UserPasswordChangeForm,
+                bindingResult: BindingResult,principal:Principal,
                 @RequestParam(value="qPage", defaultValue = "0") qPage:Int,
                 @RequestParam(value="aPage", defaultValue = "0") aPage:Int,
                 @RequestParam(value="cPage", defaultValue = "0") cPage:Int):String{
         val user = userService.getUser(principal.name)
         setContents(model,user,qPage=qPage,aPage=aPage,cPage=cPage)
+        return "profile_detail"
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/change_password")
+    fun changePassword(model:Model,
+                       @Valid userPasswordChangeForm: UserPasswordChangeForm,
+                       bindingResult: BindingResult,principal:Principal,
+                       @RequestParam(value="qPage", defaultValue = "0") qPage:Int,
+                       @RequestParam(value="aPage", defaultValue = "0") aPage:Int,
+                       @RequestParam(value="cPage", defaultValue = "0") cPage:Int):String{
+        val user = userService.getUser(principal.name)
+        setContents(model,user,qPage=qPage,aPage=aPage,cPage=cPage)
+        if (bindingResult.hasErrors()) return "profile_detail"
+        if (!userService.isMatchPassword(user,userPasswordChangeForm.originPassword)){
+            bindingResult.rejectValue("originPassword","passwordIncorrect","기존 패스워드가 일치하지 않습니다.")
+        }
+        if (userPasswordChangeForm.password1 != userPasswordChangeForm.password2){
+            bindingResult.rejectValue("password2","passwordNotMatched","확인 패스워드가 일치하지 않습니다.")
+        }
+        if (bindingResult.hasErrors()) return "profile_detail"
+        userService.updatePassword(user,userPasswordChangeForm.password1)
         return "profile_detail"
     }
 
