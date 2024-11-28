@@ -1,4 +1,4 @@
-package com.site.sbb.user
+package com.site.sbb.auth
 
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotEmpty
