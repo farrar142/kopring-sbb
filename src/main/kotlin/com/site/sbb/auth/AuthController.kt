@@ -2,11 +2,16 @@ package com.site.sbb.auth
 
 import com.site.sbb.user.UserCreateForm
 import com.site.sbb.user.UserService
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.core.env.Environment
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
 import org.springframework.mail.MailSender
 import org.springframework.mail.SimpleMailMessage
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 
@@ -22,7 +28,9 @@ import java.util.*
 class AuthController (
     private val userService: UserService,
     private val mailSender: MailSender,
-    private val env: Environment
+    private val env: Environment,
+    private val kakaoService: KakaoService,
+    private val authenticationManager: AuthenticationManager
 ){
     @GetMapping("/signup")
     fun signup(userCreateForm: UserCreateForm):String{
@@ -37,6 +45,28 @@ class AuthController (
         sb.append("&redirect_uri=").append(env.getProperty("KAKAO_REDIRECT_URI"))
         sb.append("&response_type=").append("code")
         return sb.toString()
+    }
+
+    @GetMapping("/kakao/callback")
+    fun kakaocallback(@RequestParam(value="code", defaultValue = "") code: String,
+                      request:HttpServletRequest):String{
+        if (code.isEmpty()) throw ResponseStatusException(HttpStatus.BAD_REQUEST,"잘못된 코드입니다.")
+        try{
+
+            val token = kakaoService.getAccessToken(code)
+            val info = kakaoService.getKakaoInfo(token)
+            val container = userService.getOrCreateKakaoUser(info)
+
+            val authentication = UsernamePasswordAuthenticationToken(container.user.username,container.password)
+            val authenticated = authenticationManager.authenticate(authentication)
+            val securityContext = SecurityContextHolder.getContext()
+            securityContext.authentication = authenticated
+            val session = request.getSession(true)
+            session.setAttribute("SPRING_SECURITY_CONTEXT",securityContext)
+        } catch (_: Exception){
+
+        }
+        return "redirect:/"
     }
 
     @PostMapping("/signup")
